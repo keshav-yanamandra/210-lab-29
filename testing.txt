@@ -1,0 +1,59 @@
+//Unit Testing
+
+//I will test the showData function by giving it a map with data already inside it.
+//a properly formed argument would be a map with a string key and an array of three lists as the value
+//for example, I can add one flight to Terminal A in the on time list and then call showData. I check that the terminal and flight are printed correctly.
+//I will also test an empty map. The function should return false when there is no data and true when the map has data.
+//cout statements inside the function can help show what data is being processed while testing.
+
+//Test Driver Program
+
+
+#include <iostream>
+#include <map>
+#include <array>
+#include <list>
+#include <string>
+
+using namespace std;
+
+bool showData(map<string, array<list<string>, 3> > &airportData);
+
+int main() {
+
+    map<string, array<list<string>, 3> > testData;
+
+    testData["Terminal A"][0].push_back("AA326 to PHL 00:24");
+
+    bool result = showData(testData);
+
+    if (result == true) {
+        cout << "Test passed." << endl;
+    }
+    else {
+        cout << "Test failed." << endl;
+    }
+
+    return 0;
+}
+
+bool showData(map<string, array<list<string>, 3> > &airportData) {
+
+    if (airportData.empty()) {
+        return false;
+    }
+
+    for (map<string, array<list<string>, 3> >::iterator it = airportData.begin();
+         it != airportData.end(); ++it) {
+
+        cout << it->first << endl;
+
+        for (list<string>::iterator flight = it->second[0].begin();
+             flight != it->second[0].end(); ++flight) {
+
+            cout << *flight << endl;
+        }
+    }
+
+    return true;
+}
