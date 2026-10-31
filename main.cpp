@@ -7,6 +7,8 @@
 #include <array>
 #include <list>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -38,39 +40,87 @@ this data works for the project because the real scheduled departure
 times can be used for the time periods, and the real delays and cancellations
 can be used for events instead of using random numbers.
 */
-void showData(map<string, array<list<string>, 3> > &airportData);
+bool showData(map<string, array<list<string>, 3> > &airportData);
 
 int main() {
 
     // Create the map.
     // Each map key is an airport zone.
     // The array contains 3 lists:
-    // 0 = arriving flights
-    // 1 = delayed or waiting flights
-    // 2 = departing flights
+    // 0 = on time flights
+    // 1 = delayed flights
+    // 2 = cancelled flights
     map<string, array<list<string>, 3> > airportData;
 
-    // Add some dummy data for the mockup.
-    // The real project will later read this data from a file.
-    airportData["Terminal A"][0].push_back("Flight 101");
+    // For the flight data:
+    // ontime goes into list 0
+    // delayed goes into list 1
+    // cancelled goes into list 2
+    //
+    // Each list stores a string like:
+    // AA326 to PHL 00:24
 
-    // Call a function to prove the map can be passed and used.
+    // Open the flight data file.
+    ifstream inputFile("flights.txt");
+
+    if (!inputFile) {
+        cout << "Error opening flights.txt" << endl;
+        return 1;
+    }
+
+    string line;
+
+    // Read each flight from the file.
+    while (getline(inputFile, line)) {
+
+        istringstream ss(line);
+
+        string terminal;
+        string flightNumber;
+        string destination;
+        string departureTime;
+        string delay;
+        string status;
+
+        // Split the line into its six fields.
+        getline(ss, terminal, ',');
+        getline(ss, flightNumber, ',');
+        getline(ss, destination, ',');
+        getline(ss, departureTime, ',');
+        getline(ss, delay, ',');
+        getline(ss, status, ',');
+
+        string flightInfo =
+            flightNumber + " to " + destination + " " + departureTime;
+
+        if (status == "ontime") {
+            airportData[terminal][0].push_back(flightInfo);
+        }
+        else if (status == "delayed") {
+            airportData[terminal][1].push_back(flightInfo);
+        }
+        else if (status == "cancelled") {
+            airportData[terminal][2].push_back(flightInfo);
+        }
+    }
+
+    inputFile.close();
+
+    // Call the function to display all of the map data.
     showData(airportData);
-
-    // Later the simulation will:
-    // read at least 100 lines from a file
-    // display the initial airport state
-    // run through 30 time periods
-    // move flights between the three lists
-    // display the updated state after time passes
 
     return 0;
 }
 
-void showData(map<string, array<list<string>, 3> > &airportData) {
 
-    // Display one piece of data from the nested structure.
-    cout << "Airport zone: Terminal A" << endl;
-    cout << "Arriving flight: "
-         << airportData["Terminal A"][0].front() << endl;
+bool showData(map<string, array<list<string>, 3> > &airportData) {
+
+    if (airportData.empty()) {
+        cout << "No airport data." << endl;
+        return false;
+    }
+
+    // display the map here
+
+    return true;
 }
