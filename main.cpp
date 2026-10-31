@@ -1,6 +1,6 @@
 // Keshav Yanamandra
 // COMSC-210-5293, Fall 2026
-// Lab 29
+// Lab 30
 
 #include <iostream>
 #include <map>
@@ -10,7 +10,34 @@
 
 using namespace std;
 
-// Function will display some of the airport data
+/*
+I used AI for data preperartion. 
+The data was downloaded directly from transtats.bts.gov 
+the file is 235 MB from January 2024 
+then filtered to SFO departures on 2024-01-15.
+
+Data source:
+flight data comes from the US DOT Bureau of Transportation Statistics
+On-Time Performance data from transtats.bts.gov. The file contains flights
+departing SFO on January 15, 2024.
+
+Each line has six fields:
+terminal, flight number, destination, scheduled departure time,
+delay in minutes, and status.
+Sample:
+Terminal A,AA326,PHL,00:24,7,ontime
+Terminal C,UA1003,DEN,05:00,0,cancelled
+Terminal C,UA274,IAH,05:14,0,ontime
+Terminal A,AA2614,ORD,05:45,860,delayed
+...
+
+terminal field is made-up by AI because the BTS data does not publish
+terminal information. all other flight information comes from the dataset.
+
+this data works for the project because the real scheduled departure
+times can be used for the time periods, and the real delays and cancellations
+can be used for events instead of using random numbers.
+*/
 void showData(map<string, array<list<string>, 3> > &airportData);
 
 int main() {
