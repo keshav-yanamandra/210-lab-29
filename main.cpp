@@ -121,6 +121,29 @@ bool showData(map<string, array<list<string>, 3> > &airportData) {
     }
 
     // display the map here
+        for (map<string, array<list<string>, 3> >::iterator it = airportData.begin();
+         it != airportData.end(); ++it) {
+
+        cout << endl << it->first << endl;
+
+        cout << "On time flights:" << endl;
+        for (list<string>::iterator flight = it->second[0].begin();
+             flight != it->second[0].end(); ++flight) {
+            cout << "  " << *flight << endl;
+        }
+
+        cout << "Delayed flights:" << endl;
+        for (list<string>::iterator flight = it->second[1].begin();
+             flight != it->second[1].end(); ++flight) {
+            cout << "  " << *flight << endl;
+        }
+
+        cout << "Cancelled flights:" << endl;
+        for (list<string>::iterator flight = it->second[2].begin();
+             flight != it->second[2].end(); ++flight) {
+            cout << "  " << *flight << endl;
+        }
+    }
 
     return true;
 }
