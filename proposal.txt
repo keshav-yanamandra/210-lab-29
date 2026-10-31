@@ -1,0 +1,19 @@
+Project Overview
+
+My project will be an airport traffic simulation. The simulation will keep track of flights moving through different airport zones. Each zone will have flights that are arriving, delayed or waiting, and departing. As time moves forward, flights can move between these groups depending on what happens during that time period. The goal is to show how the airport changes over time and how delays can affect the amount of flights waiting.
+
+Implementation
+
+I will use a map where the key is the name of an airport zone. The value will be an array with three lists. The first list will hold arriving flights, the second list will hold delayed or waiting flights, and the third list will hold departing flights.
+
+For example, one map entry could be "Terminal A". Its three lists would contain arriving flights, delayed flights, and departing flights for Terminal A.
+
+The finished project will read flight information from an external file with at least 100 lines of data. The data will then be put into the map and updated throughout the simulation.
+
+Simulated Events
+
+During each time period, a few different things can happen. A flight can arrive into a terminal, a flight can become delayed and move into the waiting list, or a flight can depart and be removed from the airport. These events will change the contents of the lists as the simulation runs.
+
+Time Periods
+
+I plan to run the simulation for 30 time periods. Each time period will represent 30 minutes at the airport. I chose 30 minutes because airport traffic can change pretty quickly and it gives enough time periods to see flights moving through the different stages. The program will show the starting airport data and then show how it changes as the time periods pass.
