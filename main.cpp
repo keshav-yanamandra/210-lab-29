@@ -12,6 +12,14 @@
 
 using namespace std;
 
+struct Flight {
+    string flightNumber;
+    string destination;
+    int scheduledTime;
+    int delay;
+    string status;
+};
+
 /*
 I used AI for data preperartion. 
 The data was downloaded directly from transtats.bts.gov 
@@ -40,17 +48,20 @@ this data works for the project because the real scheduled departure
 times can be used for the time periods, and the real delays and cancellations
 can be used for events instead of using random numbers.
 */
-bool showData(map<string, array<list<string>, 3> > &airportData);
+int timeToMinutes(string time);
+bool showData(map<string, array<list<Flight>, 3> > &airportData);
+
 
 int main() {
 
     // Create the map.
     // Each map key is an airport zone.
     // The array contains 3 lists:
-    // 0 = on time flights
+    // 0 = scheduled flights
     // 1 = delayed flights
-    // 2 = cancelled flights
-    map<string, array<list<string>, 3> > airportData;
+    // 2 = departed flights
+
+    map<string, array<list<Flight>, 3> > airportData;
 
     // For the flight data:
     // ontime goes into list 0
@@ -82,7 +93,6 @@ int main() {
         string delay;
         string status;
 
-        // Split the line into its six fields.
         getline(ss, terminal, ',');
         getline(ss, flightNumber, ',');
         getline(ss, destination, ',');
@@ -90,60 +100,65 @@ int main() {
         getline(ss, delay, ',');
         getline(ss, status, ',');
 
-        string flightInfo =
-            flightNumber + " to " + destination + " " + departureTime;
+        Flight flight;
 
-        if (status == "ontime") {
-            airportData[terminal][0].push_back(flightInfo);
-        }
-        else if (status == "delayed") {
-            airportData[terminal][1].push_back(flightInfo);
-        }
-        else if (status == "cancelled") {
-            airportData[terminal][2].push_back(flightInfo);
-        }
+        flight.flightNumber = flightNumber;
+        flight.destination = destination;
+        flight.scheduledTime = timeToMinutes(departureTime);
+
+        istringstream delayStream(delay);
+        delayStream >> flight.delay;
+
+        flight.status = status;
+
+        // All flights start in the scheduled list.
+        airportData[terminal][0].push_back(flight);
     }
-
     inputFile.close();
 
-    // Call the function to display all of the map data.
     showData(airportData);
 
     return 0;
 }
 
-
-bool showData(map<string, array<list<string>, 3> > &airportData) {
+bool showData(map<string, array<list<Flight>, 3> > &airportData) {
 
     if (airportData.empty()) {
         cout << "No airport data." << endl;
         return false;
     }
 
-    // display the map here
-        for (map<string, array<list<string>, 3> >::iterator it = airportData.begin();
+    for (map<string, array<list<Flight>, 3> >::iterator it = airportData.begin();
          it != airportData.end(); ++it) {
 
         cout << endl << it->first << endl;
 
-        cout << "On time flights:" << endl;
-        for (list<string>::iterator flight = it->second[0].begin();
+        cout << "Scheduled flights:" << endl;
+        for (list<Flight>::iterator flight = it->second[0].begin();
              flight != it->second[0].end(); ++flight) {
-            cout << "  " << *flight << endl;
+
+            cout << "  " << flight->flightNumber
+                 << " to " << flight->destination << endl;
         }
 
-        cout << "Delayed flights:" << endl;
-        for (list<string>::iterator flight = it->second[1].begin();
-             flight != it->second[1].end(); ++flight) {
-            cout << "  " << *flight << endl;
-        }
+        cout << "Delayed flights: "
+             << it->second[1].size() << endl;
 
-        cout << "Cancelled flights:" << endl;
-        for (list<string>::iterator flight = it->second[2].begin();
-             flight != it->second[2].end(); ++flight) {
-            cout << "  " << *flight << endl;
-        }
+        cout << "Departed flights: "
+             << it->second[2].size() << endl;
     }
 
     return true;
+}
+
+int timeToMinutes(string time) {
+    istringstream ss(time);
+
+    int hour;
+    int minute;
+    char colon;
+
+    ss >> hour >> colon >> minute;
+
+    return hour * 60 + minute;
 }
