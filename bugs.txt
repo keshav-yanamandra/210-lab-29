@@ -1,26 +1,25 @@
 I was not good at logging bugs on time, was getting confused by too many things. 
 I actually had many compilation errors -- I did not put them as bugs
 
-I added bugs up top with a 0.1 numberind
 
-BUG 0.1 Header comment still said "// Lab 30" But I was doing  Lab 31
+BUG 1 Header comment still said "// Lab 30" But I was doing  Lab 31
 FIX: I changed the comment to say 31
 
-BUG 0.2 .gitignore still said lab29, but I was doing lab31 
+BUG 2 .gitignore still said lab29, but I was doing lab31 
 FIX: I fixed it to 31 with the command
 
 
-BUG 1: After changing the map from list<string> to list<Flight>, 
+BUG 3: After changing the map from list<string> to list<Flight>, 
 the program did not compile because the file read code was trying to push string values 
 into the lists and showData still expected list<string>
 
 FIX: I changed the file reading code to create flight objects and changed showData to use list<Flight>.
 
-BUG 2: when testing timeToMinutes with invalid time string, hour and minute were not assigned values and 
+BUG 4: when testing timeToMinutes with invalid time string, hour and minute were not assigned values and 
 the function returned a garbage number.
 FIX: Initialized hour and minute to 0 and return 0 if the time cannot be read correctly.
 
-BUG 3: I added the scheduled, delayed departed code in the wrong place and it printed like this
+BUG 5: I added the scheduled, delayed departed code in the wrong place and it printed like this
 Period 28 (1170 to 1200)
 Scheduled: 9 Delayed: 4 Departed: 59
 Scheduled: 23 Delayed: 4 Departed: 170
@@ -47,3 +46,9 @@ FIX: formatted so the heading prints times like 20:30 to 21:00.
 
 BUG 9: I printed a header inconsistently 
 FIX: Added an "Initial state:" line before the first showData call to match the "Final state:" line.
+
+BUG 10: .gitignore ended up listing lab31 twice because looks like I ran the 
+command twice, 
+FIX: Deleted the duplicate line so the file lists lab29 and lab31 once each.
+
+I had a lot more comiplation problems and I did not add them here and it was difficult to keep track
