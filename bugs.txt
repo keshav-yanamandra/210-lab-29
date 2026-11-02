@@ -1,3 +1,15 @@
+I was not good at logging bugs on time, was getting confused by too many things. 
+I actually had many compilation errors -- I did not put them as bugs
+
+I added bugs up top with a 0.1 numberind
+
+BUG 0.1 Header comment still said "// Lab 30" But I was doing  Lab 31
+FIX: I changed the comment to say 31
+
+BUG 0.2 .gitignore still said lab29, but I was doing lab31 
+FIX: I fixed it to 31 with the command
+
+
 BUG 1: After changing the map from list<string> to list<Flight>, 
 the program did not compile because the file read code was trying to push string values 
 into the lists and showData still expected list<string>
@@ -20,4 +32,9 @@ Scheduled: 22 Delayed: 2 Departed: 173
 Scheduled: 37 Delayed: 5 Departed: 260
 
 Fix: I fixed by moving up the brace -- so that it only prints once
+
+
+BUG 6: After the 30 time periods finished, I did not display the final map .
+FIX: Added a call to showData after loop so the final scheduled, delayed, and 
+departed is displayed.
 

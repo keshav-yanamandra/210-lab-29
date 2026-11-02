@@ -177,12 +177,17 @@ int main() {
             delayedTotal += terminal->second[1].size();
             departedTotal += terminal->second[2].size();
              }
-             
+
         cout << "Scheduled: " << scheduledTotal << " Delayed: " << delayedTotal << " Departed: " << departedTotal << endl;
         
 
 
     }
+
+    cout << endl;
+    cout << "Final state:" << endl;
+    showData(airportData);
+
 
     return 0;
 }
