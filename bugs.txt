@@ -38,3 +38,5 @@ BUG 6: After the 30 time periods finished, I did not display the final map .
 FIX: Added a call to showData after loop so the final scheduled, delayed, and 
 departed is displayed.
 
+BUG 7: showData printed every scheduled flight, but delayed and departed flights only showed counts
+FIX: added code to display the flights in the delayed and departed 

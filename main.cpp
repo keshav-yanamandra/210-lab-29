@@ -209,15 +209,27 @@ bool showData(map<string, array<list<Flight>, 3> > &airportData) {
         for (list<Flight>::iterator flight = it->second[0].begin();
             flight != it->second[0].end(); ++flight) {
 
-            cout << "  " << flight->flightNumber
-                 << " to " << flight->destination << endl;
+                cout << "  " << flight->flightNumber << " to " << flight->destination << endl;
         }
 
         cout << "Delayed flights: "
              << it->second[1].size() << endl;
 
+        for (list<Flight>::iterator flight = it->second[1].begin();
+            flight != it->second[1].end(); ++flight) {
+
+                cout << "  " << flight->flightNumber << " to " << flight->destination << endl;
+        }
+
         cout << "Departed flights: "
              << it->second[2].size() << endl;
+
+        for (list<Flight>::iterator flight = it->second[2].begin();
+            flight != it->second[2].end(); ++flight) {
+
+            cout << "  " << flight->flightNumber
+                << " to " << flight->destination << endl;
+        }
     }
 
     return true;
