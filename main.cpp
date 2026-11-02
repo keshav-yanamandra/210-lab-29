@@ -112,6 +112,7 @@ int main() {
     }
     inputFile.close();
 
+    cout << "Initial state:" << endl;
     showData(airportData);
 
     for (int period = 0; period < 30; period++) {
@@ -120,8 +121,29 @@ int main() {
         int windowEnd = windowStart + 30;
 
         cout << endl;
-        cout << "Period " << period + 1  << " (" << windowStart << " to " << windowEnd << ")" << endl;
 
+        int startHour = windowStart / 60;
+        int startMinute = windowStart % 60;
+        int endHour = windowEnd / 60;
+        int endMinute = windowEnd % 60;
+
+        cout << "Period " << period + 1 << " ("
+            << startHour << ":";
+
+        if (startMinute < 10) {
+            cout << "0";
+        }
+
+        cout << startMinute << " to "
+            << endHour << ":";
+
+        if (endMinute < 10) {
+            cout << "0";
+        }
+
+        cout << endMinute << ")" << endl;
+
+        
         for (map<string, array<list<Flight>, 3> >::iterator terminal = airportData.begin();
             terminal != airportData.end(); ++terminal) {
 

@@ -40,3 +40,10 @@ departed is displayed.
 
 BUG 7: showData printed every scheduled flight, but delayed and departed flights only showed counts
 FIX: added code to display the flights in the delayed and departed 
+
+BUG 8: The period headings printed as raw minutes, like "Period 30 (1230 to 1260)", 
+which was hard to read as a time.
+FIX: formatted so the heading prints times like 20:30 to 21:00.
+
+BUG 9: I printed a header inconsistently 
+FIX: Added an "Initial state:" line before the first showData call to match the "Final state:" line.
