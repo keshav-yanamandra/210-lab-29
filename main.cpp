@@ -66,7 +66,7 @@ int main() {
     // All flights start in list 0 as scheduled flights.
     // The flight status will determine what happens to each flight later.
     // Each list stores Flight records with the flight information.
-    
+
     // Open the flight data file.
     ifstream inputFile("flights.txt");
 
@@ -114,6 +114,17 @@ int main() {
 
     showData(airportData);
 
+    for (int period = 0; period < 30; period++) {
+
+        int windowStart = 360 + (period * 30);
+        int windowEnd = windowStart + 30;
+
+        cout << endl;
+        cout << "Period " << period + 1  << " (" << windowStart << " to " << windowEnd << ")" << endl;
+
+        // Flight movement will be added here next.
+    }
+
     return 0;
 }
 
@@ -129,9 +140,10 @@ bool showData(map<string, array<list<Flight>, 3> > &airportData) {
 
         cout << endl << it->first << endl;
 
-        cout << "Scheduled flights:" << endl;
+        cout << "Scheduled flights: " << it->second[0].size() << endl;
+
         for (list<Flight>::iterator flight = it->second[0].begin();
-             flight != it->second[0].end(); ++flight) {
+            flight != it->second[0].end(); ++flight) {
 
             cout << "  " << flight->flightNumber
                  << " to " << flight->destination << endl;
