@@ -1,6 +1,6 @@
 // Keshav Yanamandra
 // COMSC-210-5293, Fall 2026
-// Lab 30
+// Lab 31
 
 #include <iostream>
 #include <map>
@@ -11,6 +11,14 @@
 #include <sstream>
 
 using namespace std;
+
+struct Flight {
+    string flightNumber;
+    string destination;
+    int scheduledTime;
+    int delay;
+    string status;
+};
 
 /*
 I used AI for data preperartion. 
@@ -40,25 +48,24 @@ this data works for the project because the real scheduled departure
 times can be used for the time periods, and the real delays and cancellations
 can be used for events instead of using random numbers.
 */
-bool showData(map<string, array<list<string>, 3> > &airportData);
+int timeToMinutes(string time);
+bool showData(map<string, array<list<Flight>, 3> > &airportData);
+
 
 int main() {
 
     // Create the map.
     // Each map key is an airport zone.
     // The array contains 3 lists:
-    // 0 = on time flights
+    // 0 = scheduled flights
     // 1 = delayed flights
-    // 2 = cancelled flights
-    map<string, array<list<string>, 3> > airportData;
+    // 2 = departed flights
 
-    // For the flight data:
-    // ontime goes into list 0
-    // delayed goes into list 1
-    // cancelled goes into list 2
-    //
-    // Each list stores a string like:
-    // AA326 to PHL 00:24
+    map<string, array<list<Flight>, 3> > airportData;
+
+    // All flights start in list 0 as scheduled flights.
+    // The flight status will determine what happens to each flight later.
+    // Each list stores Flight records with the flight information.
 
     // Open the flight data file.
     ifstream inputFile("flights.txt");
@@ -82,7 +89,6 @@ int main() {
         string delay;
         string status;
 
-        // Split the line into its six fields.
         getline(ss, terminal, ',');
         getline(ss, flightNumber, ',');
         getline(ss, destination, ',');
@@ -90,60 +96,177 @@ int main() {
         getline(ss, delay, ',');
         getline(ss, status, ',');
 
-        string flightInfo =
-            flightNumber + " to " + destination + " " + departureTime;
+        Flight flight;
 
-        if (status == "ontime") {
-            airportData[terminal][0].push_back(flightInfo);
-        }
-        else if (status == "delayed") {
-            airportData[terminal][1].push_back(flightInfo);
-        }
-        else if (status == "cancelled") {
-            airportData[terminal][2].push_back(flightInfo);
-        }
+        flight.flightNumber = flightNumber;
+        flight.destination = destination;
+        flight.scheduledTime = timeToMinutes(departureTime);
+
+        istringstream delayStream(delay);
+        delayStream >> flight.delay;
+
+        flight.status = status;
+
+        // All flights start in the scheduled list.
+        airportData[terminal][0].push_back(flight);
     }
-
     inputFile.close();
 
-    // Call the function to display all of the map data.
+    cout << "Initial state:" << endl;
     showData(airportData);
+
+    for (int period = 0; period < 30; period++) {
+
+        int windowStart = 360 + (period * 30);
+        int windowEnd = windowStart + 30;
+
+        cout << endl;
+
+        int startHour = windowStart / 60;
+        int startMinute = windowStart % 60;
+        int endHour = windowEnd / 60;
+        int endMinute = windowEnd % 60;
+
+        cout << "Period " << period + 1 << " ("
+            << startHour << ":";
+
+        if (startMinute < 10) {
+            cout << "0";
+        }
+
+        cout << startMinute << " to "
+            << endHour << ":";
+
+        if (endMinute < 10) {
+            cout << "0";
+        }
+
+        cout << endMinute << ")" << endl;
+
+        
+        for (map<string, array<list<Flight>, 3> >::iterator terminal = airportData.begin();
+            terminal != airportData.end(); ++terminal) {
+
+            list<Flight> &scheduled = terminal->second[0];
+            list<Flight> &delayed = terminal->second[1];
+            list<Flight> &departed = terminal->second[2];
+
+            // Check scheduled flights.
+            for (list<Flight>::iterator it = scheduled.begin();
+                it != scheduled.end();) {
+
+                if (it->scheduledTime < windowEnd) {
+
+                    if (it->status == "cancelled") {
+                        it = scheduled.erase(it);
+                    }
+                    else if (it->delay < 15) {
+                        departed.push_back(*it);
+                        it = scheduled.erase(it);
+                    }
+                    else {
+                        delayed.push_back(*it);
+                        it = scheduled.erase(it);
+                    }
+                }
+                else {
+                    ++it;
+                }
+            }
+
+            // Check flights that are currently delayed.
+            for (list<Flight>::iterator it = delayed.begin();
+                it != delayed.end();) {
+
+                if (it->scheduledTime + it->delay < windowEnd) {
+                    departed.push_back(*it);
+                    it = delayed.erase(it);
+                }
+                else {
+                    ++it;
+                }
+            }
+        }
+
+        int scheduledTotal = 0;
+        int delayedTotal = 0;
+        int departedTotal = 0;
+
+        for (map<string, array<list<Flight>, 3> >::iterator terminal = airportData.begin();
+             terminal != airportData.end(); ++terminal) {
+
+            scheduledTotal += terminal->second[0].size();
+            delayedTotal += terminal->second[1].size();
+            departedTotal += terminal->second[2].size();
+             }
+
+        cout << "Scheduled: " << scheduledTotal << " Delayed: " << delayedTotal << " Departed: " << departedTotal << endl;
+        
+
+
+    }
+
+    cout << endl;
+    cout << "Final state:" << endl;
+    showData(airportData);
+
 
     return 0;
 }
 
-
-bool showData(map<string, array<list<string>, 3> > &airportData) {
+bool showData(map<string, array<list<Flight>, 3> > &airportData) {
 
     if (airportData.empty()) {
         cout << "No airport data." << endl;
         return false;
     }
 
-    // display the map here
-        for (map<string, array<list<string>, 3> >::iterator it = airportData.begin();
+    for (map<string, array<list<Flight>, 3> >::iterator it = airportData.begin();
          it != airportData.end(); ++it) {
 
         cout << endl << it->first << endl;
 
-        cout << "On time flights:" << endl;
-        for (list<string>::iterator flight = it->second[0].begin();
-             flight != it->second[0].end(); ++flight) {
-            cout << "  " << *flight << endl;
+        cout << "Scheduled flights: " << it->second[0].size() << endl;
+
+        for (list<Flight>::iterator flight = it->second[0].begin();
+            flight != it->second[0].end(); ++flight) {
+
+                cout << "  " << flight->flightNumber << " to " << flight->destination << endl;
         }
 
-        cout << "Delayed flights:" << endl;
-        for (list<string>::iterator flight = it->second[1].begin();
-             flight != it->second[1].end(); ++flight) {
-            cout << "  " << *flight << endl;
+        cout << "Delayed flights: "
+             << it->second[1].size() << endl;
+
+        for (list<Flight>::iterator flight = it->second[1].begin();
+            flight != it->second[1].end(); ++flight) {
+
+                cout << "  " << flight->flightNumber << " to " << flight->destination << endl;
         }
 
-        cout << "Cancelled flights:" << endl;
-        for (list<string>::iterator flight = it->second[2].begin();
-             flight != it->second[2].end(); ++flight) {
-            cout << "  " << *flight << endl;
+        cout << "Departed flights: "
+             << it->second[2].size() << endl;
+
+        for (list<Flight>::iterator flight = it->second[2].begin();
+            flight != it->second[2].end(); ++flight) {
+
+            cout << "  " << flight->flightNumber
+                << " to " << flight->destination << endl;
         }
     }
 
     return true;
+}
+
+int timeToMinutes(string time) {
+    istringstream ss(time);
+
+    int hour = 0;
+    int minute = 0;
+    char colon;
+
+    if (!(ss >> hour >> colon >> minute)) {
+        return 0;
+    }
+
+    return hour * 60 + minute;
 }
