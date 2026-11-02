@@ -1,6 +1,6 @@
 // Keshav Yanamandra
 // COMSC-210-5293, Fall 2026
-// Lab 30
+// Lab 31
 
 #include <iostream>
 #include <map>
@@ -63,14 +63,10 @@ int main() {
 
     map<string, array<list<Flight>, 3> > airportData;
 
-    // For the flight data:
-    // ontime goes into list 0
-    // delayed goes into list 1
-    // cancelled goes into list 2
-    //
-    // Each list stores a string like:
-    // AA326 to PHL 00:24
-
+    // All flights start in list 0 as scheduled flights.
+    // The flight status will determine what happens to each flight later.
+    // Each list stores Flight records with the flight information.
+    
     // Open the flight data file.
     ifstream inputFile("flights.txt");
 
