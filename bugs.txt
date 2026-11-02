@@ -2,3 +2,4 @@ BUG 1: After changing the map from list<string> to list<Flight>,
 the program did not compile because the file read code was trying to push string values 
 into the lists and showData still expected list<string>
 
+FIX: I changed the file reading code to create flight objects and changed showData to use list<Flight>.
