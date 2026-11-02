@@ -7,3 +7,17 @@ FIX: I changed the file reading code to create flight objects and changed showDa
 BUG 2: when testing timeToMinutes with invalid time string, hour and minute were not assigned values and 
 the function returned a garbage number.
 FIX: Initialized hour and minute to 0 and return 0 if the time cannot be read correctly.
+
+BUG 3: I added the scheduled, delayed departed code in the wrong place and it printed like this
+Period 28 (1170 to 1200)
+Scheduled: 9 Delayed: 4 Departed: 59
+Scheduled: 23 Delayed: 4 Departed: 170
+Scheduled: 39 Delayed: 9 Departed: 254
+
+Period 29 (1200 to 1230)
+Scheduled: 9 Delayed: 2 Departed: 61
+Scheduled: 22 Delayed: 2 Departed: 173
+Scheduled: 37 Delayed: 5 Departed: 260
+
+Fix: I fixed by moving up the brace -- so that it only prints once
+

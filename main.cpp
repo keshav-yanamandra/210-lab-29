@@ -122,7 +122,6 @@ int main() {
         cout << endl;
         cout << "Period " << period + 1  << " (" << windowStart << " to " << windowEnd << ")" << endl;
 
-        // Flight movement will be added here next.
         for (map<string, array<list<Flight>, 3> >::iterator terminal = airportData.begin();
             terminal != airportData.end(); ++terminal) {
 
@@ -166,6 +165,22 @@ int main() {
                 }
             }
         }
+
+        int scheduledTotal = 0;
+        int delayedTotal = 0;
+        int departedTotal = 0;
+
+        for (map<string, array<list<Flight>, 3> >::iterator terminal = airportData.begin();
+             terminal != airportData.end(); ++terminal) {
+
+            scheduledTotal += terminal->second[0].size();
+            delayedTotal += terminal->second[1].size();
+            departedTotal += terminal->second[2].size();
+             }
+             
+        cout << "Scheduled: " << scheduledTotal << " Delayed: " << delayedTotal << " Departed: " << departedTotal << endl;
+        
+
 
     }
 
