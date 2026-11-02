@@ -123,6 +123,50 @@ int main() {
         cout << "Period " << period + 1  << " (" << windowStart << " to " << windowEnd << ")" << endl;
 
         // Flight movement will be added here next.
+        for (map<string, array<list<Flight>, 3> >::iterator terminal = airportData.begin();
+            terminal != airportData.end(); ++terminal) {
+
+            list<Flight> &scheduled = terminal->second[0];
+            list<Flight> &delayed = terminal->second[1];
+            list<Flight> &departed = terminal->second[2];
+
+            // Check scheduled flights.
+            for (list<Flight>::iterator it = scheduled.begin();
+                it != scheduled.end();) {
+
+                if (it->scheduledTime < windowEnd) {
+
+                    if (it->status == "cancelled") {
+                        it = scheduled.erase(it);
+                    }
+                    else if (it->delay < 15) {
+                        departed.push_back(*it);
+                        it = scheduled.erase(it);
+                    }
+                    else {
+                        delayed.push_back(*it);
+                        it = scheduled.erase(it);
+                    }
+                }
+                else {
+                    ++it;
+                }
+            }
+
+            // Check flights that are currently delayed.
+            for (list<Flight>::iterator it = delayed.begin();
+                it != delayed.end();) {
+
+                if (it->scheduledTime + it->delay < windowEnd) {
+                    departed.push_back(*it);
+                    it = delayed.erase(it);
+                }
+                else {
+                    ++it;
+                }
+            }
+        }
+
     }
 
     return 0;
@@ -162,11 +206,13 @@ bool showData(map<string, array<list<Flight>, 3> > &airportData) {
 int timeToMinutes(string time) {
     istringstream ss(time);
 
-    int hour;
-    int minute;
+    int hour = 0;
+    int minute = 0;
     char colon;
 
-    ss >> hour >> colon >> minute;
+    if (!(ss >> hour >> colon >> minute)) {
+        return 0;
+    }
 
     return hour * 60 + minute;
 }

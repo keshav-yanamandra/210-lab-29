@@ -3,3 +3,7 @@ the program did not compile because the file read code was trying to push string
 into the lists and showData still expected list<string>
 
 FIX: I changed the file reading code to create flight objects and changed showData to use list<Flight>.
+
+BUG 2: when testing timeToMinutes with invalid time string, hour and minute were not assigned values and 
+the function returned a garbage number.
+FIX: Initialized hour and minute to 0 and return 0 if the time cannot be read correctly.
